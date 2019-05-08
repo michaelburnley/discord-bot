@@ -1,0 +1,10 @@
+{
+    "roleLookup": [
+        "what is"
+    ],
+    "hello": ["Hey! I'm a bot."],
+    "demote": {
+        "command": ["demote", "to"],
+        "permission": ["Daddy"]
+    }
+}

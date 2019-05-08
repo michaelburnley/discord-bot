@@ -1,19 +1,16 @@
-const Discord = require('discord.js')
 const DOTENV = require('dotenv').config();
-const http = require ('http');
-const client = new Discord.Client();
-const handle = (req, res) => {res.send("hit")}
-const server = http.createServer(handle);
+const _ = require('lodash');
+const getData = require('./api/getData');
+const events = require('./api/event');
+const commands = require('./api/commando');
 
-server.listen(process.env.PORT || 5000);
+//TODO: Add Daddy Commands - Admin functionality
+//TODO: Mention role when they login or join server
+//TODO: Automatically assign roles when people join
+//TODO: 
 
-client.on('message', msg => {
-    if(msg.author === "killerjose11" || msg.author === "plasmonster") {
-        msg.reply("Look, y'all need to stop.")
-    }
-    else if (msg.content === "hi coffeebot" || msg.content === "hey coffeebot" || msg.content === "coffeebot" || msg.content === "whats up coffebot") {
-        msg.reply('Hey! I\'m a bot.')
-    }
-})
-
-client.login(process.env.DISCORD_BOT_TOKEN);
+getData()
+.then((data) => {
+    events(data);
+    commands();
+});
