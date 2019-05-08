@@ -3,8 +3,10 @@
         "what is"
     ],
     "hello": ["Hey! I'm a bot."],
+    "touch": ["touch"],
+    "smacking": ["smacking"],
     "demote": {
-        "command": ["demote", "to"],
+        "command": ["demote"],
         "permission": ["Daddy"]
     }
 }

@@ -16,7 +16,9 @@ module.exports = {
 
         if(!found) {
             found = _.find(members, (member) => {
-                return member.nick.toLowerCase() === username;
+                if(member.nick) {
+                    return member.nick.toLowerCase() === username;
+                }
             });
         }
         return found;

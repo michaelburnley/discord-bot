@@ -8,10 +8,6 @@ module.exports = {
         user_id,
         guild_id
     }) => {
-        console.log( old_role,
-            new_role,
-            user_id,
-            guild_id)
         discord.put(`/guilds/${guild_id}/members/${user_id}/roles/${new_role}`)
         .then(() => {
             console.log(`Added role ${new_role}`);
