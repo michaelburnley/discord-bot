@@ -5,6 +5,7 @@
     "hello": ["Hey! I'm a bot."],
     "touch": ["touch"],
     "smacking": ["smacking"],
+    "appreciation": ["thanks", "thank you", "i appreciate you"],
     "demote": {
         "command": ["demote"],
         "permission": ["Daddy"]

@@ -8,6 +8,7 @@ const roleCheck = require('./onMessage/roleCheck');
 const demote = require('./onMessage/demote');
 const nowPlaying = require('./presenceChange/nowPlaying');
 const molest = require('./onMessage/molest');
+const thanks = require('./onMessage/thankyou');
 
 const {
     PORT,
@@ -48,6 +49,10 @@ module.exports = (data) => {
                 content,
                 data
             };
+
+            if(_.includes(content, commands.appreciation)) {
+                thanks(msg_data);
+            }
 
             if(_.includes(content, commands.touch) || _.includes(content, commands.smacking)) {
                 molest(msg_data);
