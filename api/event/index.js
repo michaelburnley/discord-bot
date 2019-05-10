@@ -33,7 +33,12 @@ module.exports = (data) => {
         }
     });
     
-    
+    //TODO: Coffee sex me - I put on my robe and wizard
+    //TODO: coffee touch @user
+    //TODO: reminders
+    //TODO: send later
+    //TODO: call jose llama boy anytime he talks to it
+
     client.on('message', msg => {
         // const send = message.channel.send;
         if(_.includes(msg.content, config.prefix)) {
@@ -44,7 +49,7 @@ module.exports = (data) => {
                 data
             };
 
-            if(_.includes(content, commands.touch)) {
+            if(_.includes(content, commands.touch) || _.includes(content, commands.smacking)) {
                 molest(msg_data);
             }
 
