@@ -27,9 +27,10 @@ module.exports = (data) => {
 
     client.on('presenceUpdate', (oldMember, newMember) => {
         const {
-            game
+            game,
+            status
         } = newMember.presence;
-        if(game) {
+        if(game && status === "online") {
             nowPlaying(client, newMember);
         }
     });
