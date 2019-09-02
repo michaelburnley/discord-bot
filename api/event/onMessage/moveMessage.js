@@ -1,5 +1,6 @@
 const { RichEmbed } = require('discord.js');
 const _ = require('lodash');
+const { findRole, findMember } = require('../../../helpers');
 
 const shame_urls = [
     'https://media.giphy.com/media/Ob7p7lDT99cd2/giphy.gif',
@@ -11,7 +12,15 @@ const shame_urls = [
     'http://giphygifs.s3.amazonaws.com/media/G9j9CAnE39cpq/giphy.gif'
 ];
 
-module.exports = async ({ msg, content, data: { guild }}, client) => {
+module.exports = async ({ msg, content, data: { members, roles }}, client) => {
+
+    const member = findMember(msg.member.user.username, members);
+    const role = findRole(member.roles[0], roles);
+    
+    if(!_.includes(`Daddy`, role.name)) {
+        return msg.channel.send(`You're no daddy. Not moving message.`);
+    }
+
     try {
         const content_arr = content.split(` `);
         const channel = content_arr.pop();
