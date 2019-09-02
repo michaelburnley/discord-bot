@@ -9,5 +9,6 @@
     "demote": {
         "command": ["demote"],
         "permission": ["Daddy"]
-    }
+    },
+    "moveMessage": ["move"]
 }
