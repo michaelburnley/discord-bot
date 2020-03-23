@@ -4,7 +4,6 @@ const { findRole, findMember } = require('../../../helpers');
 
 const shame_urls = [
     'https://media.giphy.com/media/Ob7p7lDT99cd2/giphy.gif',
-    'https://media.giphy.com/media/Ob7p7lDT99cd2/giphy.gif',
     'https://media.giphy.com/media/14saZ73y5Ik5uE/giphy.gif',
     'http://giphygifs.s3.amazonaws.com/media/Db3OfoegpwajK/giphy.gif',
     'https://media.giphy.com/media/eP1fobjusSbu/giphy.gif',
@@ -12,9 +11,8 @@ const shame_urls = [
     'http://giphygifs.s3.amazonaws.com/media/G9j9CAnE39cpq/giphy.gif'
 ];
 
-module.exports = async ({ msg, content, data: { members, roles }}, client) => {
-
-    const member = findMember(msg.member.user.username, members);
+module.exports = async ({ msg, content, data: { members, roles }}, client, user) => {
+    const member = findMember(user.username, members);
     const role = findRole(member.roles[0], roles);
     
     if(!_.includes(`Daddy`, role.name)) {
@@ -27,6 +25,8 @@ module.exports = async ({ msg, content, data: { members, roles }}, client) => {
         const message_id = content_arr.pop();
         const message = await msg.channel.fetchMessage(message_id)
     
+        if (message.author.username === `coffeebot`) return;
+
         const correct_channel = client.channels.find("name", channel);
         correct_channel.send(`<@${message.member.user.id}> said this in the wrong channel: \n >>> ${message.content}`);
         

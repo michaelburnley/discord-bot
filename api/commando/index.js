@@ -1,7 +1,7 @@
-const Commando = require('discord.js-commando');
+const { CommandoClient } = require('discord.js-commando');
 const path = require('path');
-const client = new Commando.Client({
-    owner: '193891972623106048'
+const client = new CommandoClient({
+    owner: '193891972623106048',
 });
 
 const {

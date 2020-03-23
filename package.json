@@ -7,18 +7,17 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "discord.js": "^11.4.2",
     "discord.js-commando": "^0.10.0",
     "dotenv": "^6.1.0",
     "eslint": "^5.16.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "pluralize": "^7.0.0"
   }
 }

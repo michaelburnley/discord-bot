@@ -110,7 +110,7 @@ module.exports = (data) => {
                 content,
                 data
             };
-            moveMessage(msg_data, client);
+            moveMessage(msg_data, client, user);
         }
     });
     

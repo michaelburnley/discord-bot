@@ -28,10 +28,10 @@ module.exports = class defineCommand extends Command{
             return;
         }
 
-        let formatted = [];
+        let formatted = [`**${text}**\n`];
         let count = 1;
         _.each(definitions, (definition) => {
-            let format = `${count}. \`${definition}\`\n`;
+            let format = `${count}. ${definition}\n`;
             formatted.push(format);
             count++;
         });

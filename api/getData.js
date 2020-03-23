@@ -51,6 +51,5 @@ module.exports = async () => {
         members,
     };
 
-    // console.log(members);
     return obj;
 };
