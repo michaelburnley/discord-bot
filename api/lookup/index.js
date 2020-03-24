@@ -9,7 +9,7 @@ module.exports = (word) => {
     return new Promise((resolve) => {
         dictionary.get(`/${word}?key=${DICTIONARY_API_KEY}`)
         .then(({ data }) => {
-            return resolve(data[0].shortdef);
+            return resolve(data[0]);
         })
         .catch(error)
     });

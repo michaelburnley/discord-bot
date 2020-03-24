@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando');
 const _ = require('lodash');
 const dictionary = require('../../../lookup/index');
+const richEmbed = require('../../../../helpers/sendEmbed');
 
 module.exports = class defineCommand extends Command{
     constructor(client) {
@@ -28,13 +29,19 @@ module.exports = class defineCommand extends Command{
             return;
         }
 
-        let formatted = [`**${text}**\n`];
+        let formatted = [];
         let count = 1;
-        _.each(definitions, (definition) => {
+        _.each(definitions.shortdef, (definition) => {
             let format = `${count}. ${definition}\n`;
             formatted.push(format);
             count++;
         });
-        msg.say(formatted)
+
+        const rich_text = richEmbed({ 
+            title: `${text} (${definitions.fl})`,
+            description: formatted,
+            color: `#0000ff`
+        })
+        msg.say(rich_text)
     }
 }
