@@ -31,7 +31,6 @@ module.exports = async ({ msg, content, data: { members, roles }}, client, user)
         correct_channel.send(`<@${message.member.user.id}> said this in the wrong channel: \n >>> ${message.content}`);
         
         const random_shame = shame_urls[_.random(shame_urls.length - 1)];
-        msg.channel.send(random_shame);
         const shame_image = new RichEmbed()
         .setImage(random_shame);
         correct_channel.send(shame_image);

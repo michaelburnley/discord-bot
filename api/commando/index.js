@@ -16,7 +16,7 @@ module.exports = () => {
         // Registers your custom command groups
         .registerGroups([
             ['basic', 'Fun commands'],
-            // ['some', 'Some group'],
+            ['interaction', 'Commands for interacting'],
             // ['other', 'Some other group']
         ])
         // Registers all built-in groups, commands, and argument types
