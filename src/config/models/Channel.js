@@ -1,5 +1,3 @@
-import { Channel } from "discord.js";
-
 export default {
 	attributes: {
 		id: {
@@ -9,7 +7,7 @@ export default {
 			autoIncrement: true,
 		},
 		type: {
-			type: Sequelize.STRING,
+			type: Sequelize.STRING(255),
 		},
 		guild_id: {
 			type: Sequelize.INTEGER,
@@ -18,10 +16,10 @@ export default {
 			type: Sequelize.INTEGER,
 		},
 		name: {
-			type: Sequelize.STRING,
+			type: Sequelize.STRING(255),
 		},
 		topic: {
-			type: Sequelize.STRING,
+			type: Sequelize.STRING(255),
 		},
 		nsfw: {
 			type: Sequelize.BOOLEAN,
@@ -36,7 +34,7 @@ export default {
 			type: Sequelize.INTEGER,
 		},
 		icon: {
-			type: Sequelize.STRING,
+			type: Sequelize.STRING(255),
 		},
 		owner_id: {
 			type: Sequelize.BIGINT,
@@ -49,8 +47,7 @@ export default {
 		},
 	},
 	associations: () => {
-		Channel.belongsTo(Guild);
-		Channel.hasOne(User)
+		Channel.belongsTo(Guild, { as: `channels` });
 	},
 	options: {
 		tableName: `channels`,

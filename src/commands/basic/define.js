@@ -1,9 +1,8 @@
-const { Command } = require('discord.js-commando');
-const _ = require('lodash');
-const dictionary = require('../../../lookup/index');
-const richEmbed = require('../../../../helpers/sendEmbed');
+import { Command } from 'discord.js-commando';
+import dictionary from '../../helpers/lookup';
+import richEmbed from '../../helpers/sendEmbed';
 
-module.exports = class defineCommand extends Command{
+export default class defineCommand extends Command{
     constructor(client) {
         super(client, {
             name: 'define',

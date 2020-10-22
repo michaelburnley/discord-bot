@@ -1,18 +1,13 @@
-const { Command } = require('discord.js-commando');
-const _ = require('lodash');
-const moment = require('moment');
-const schedule = require('node-schedule');
-const richEmbed = require('../../../../helpers/sendEmbed');
+import { Command } from 'discord.js-commando';
+import richEmbed from '../../helpers/sendEmbed';
 
-const cache = {};
-
-module.exports = class pollCommand extends Command{
+export default class reminderCommand extends Command{
     constructor(client) {
         super(client, {
-            name: 'poll2',
-            aliases: ['survey2'],
+            name: 'reminder',
+            aliases: ['remindme', ''],
             group: 'basic',
-            memberName: 'poll2',
+            memberName: 'poll',
             description: 'Poll the server for a yes/no question.',
             examples: ['!poll'],
             args: [
@@ -24,6 +19,7 @@ module.exports = class pollCommand extends Command{
                 }
             ]
         })
+        // this.client = client;
     }
     async run(msg, { text }) {
 
@@ -48,29 +44,17 @@ module.exports = class pollCommand extends Command{
             }
         }
 
-        const date = moment().add({ minutes: 1 }).toDate();
         const rich_text = richEmbed({ 
             title: message_data,
             description: `<@${msg.author.id}> really needs to know: ${text}`,
             color: `#ff0000`,
             thumbnail: 'https://media.giphy.com/media/a5viI92PAF89q/giphy.gif',
-            footer: `Poll will end at ${moment(date).format(`hh:mm`)}`
+            // image: 'https://media.giphy.com/media/a5viI92PAF89q/giphy.gif' 
         });
         msg.say(rich_text)
         .then((message) => {
-            message.react("👎")
             message.react("👍")
-            cache[message.id] = message_data;
-            schedule.scheduleJob(date, () => {
-                const updated_message = message.channel.fetchMessage(message.id);
-                const rich_edit = richEmbed({
-                    title: `Poll \"${message_data}\" Closed!`,
-                    description: `The result is ${message.reactions}`,
-                    footer: ``,
-                    color: `#00FF00`,
-                });
-                // message.edit();
-            });
+            message.react("👎")
         });
     } 
 }

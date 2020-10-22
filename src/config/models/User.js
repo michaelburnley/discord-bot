@@ -44,8 +44,7 @@ export default {
 		},
 	},
 	associations: () => {
-		User.belongsToMany(Guild, { as: `guilds` });
-		User.hasMany(Role);
+		User.hasMany(Role, { as: `roles` });
 	},
 	options: {
 		tableName: `users`,

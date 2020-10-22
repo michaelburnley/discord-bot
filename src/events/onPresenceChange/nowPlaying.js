@@ -1,5 +1,5 @@
 const gameData = require('./gameData.json');
-const sendEmbed = require('../../../../helpers/sendEmbed');
+import sendEmbed from '../../helpers/sendEmbed'
 
 const {
     PRIMARY_CHANNEL,

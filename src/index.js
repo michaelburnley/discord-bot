@@ -1,14 +1,11 @@
 import utils from "./utils";
-import getData from './helpers/getData';
-import events from './services/discord/event';
-import commands from './services/discord/commando';
+import commando from './services/commando';
+import discord from './services/discord';
 
 export default () => {
     utils();
-    getData() .then((data) => {
-        events(data);
-        commands();
-    });
+    discord();
+    // commando();
     
 	console.log(`Coffeebot Online!`);
 };

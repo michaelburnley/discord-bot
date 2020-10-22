@@ -7,19 +7,19 @@ export default {
 			autoIncrement: true,
 		},
 		name: {
-			type: Sequelize.STRING,
+			type: Sequelize.STRING(255),
 		},
 		icon: {
-			type: Sequelize.STRING,
+			type: Sequelize.STRING(255),
 		},
 		icon_hash: {
-			type: Sequelize.STRING,
+			type: Sequelize.STRING(255),
 		},
 		splash: {
-			type: Sequelize.STRING,
+			type: Sequelize.STRING(255),
 		},
 		discovery_splash: {
-			type: Sequelize.STRING,
+			type: Sequelize.STRING(255),
 		},
 		owner_id: {
 			type: Sequelize.BIGINT,

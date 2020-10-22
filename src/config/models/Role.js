@@ -29,7 +29,7 @@ export default {
 		},
 	},
 	associations: () => {
-		Role.belongsTo(Guild);
+		Role.belongsTo(Guild, { as: `roles` });
 	},
 	options: {
 		tableName: `roles`,

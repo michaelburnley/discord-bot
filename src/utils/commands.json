@@ -11,5 +11,7 @@
         "command": ["demote"],
         "permission": ["Daddy"]
     },
-    "moveMessage": ["move"]
+    "moveMessage": ["move"],
+    "joke": ["tell me a joke", "joke"],
+    "define": ["define"]
 }
