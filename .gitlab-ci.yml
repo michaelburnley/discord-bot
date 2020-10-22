@@ -1,0 +1,187 @@
+variables:
+    SUBDOMAIN: coffee-bot
+    REPLICAS: 1
+    ENV_VARIABLES: "DISCORD_BOT_TOKEN, DISCORD_API_URL, BOT_VERSION, URL, SERVER_NAME, PRIMARY_CHANNEL, DICTIONARY_API_URL, DICTIONARY_API_KEY, THESAURUS_API_KEY, DAD_JOKE" # Provide ENV variables here separate by a comma and space. These must be set up in gitlab secret variables to work.
+    # Set the above to "false" (in quotes) if you don't need any ENV variables (rare)
+  
+    # The defaults below shouldn't need to be changed for most apps
+    GCP_PROJECT_ID: sleepless-software
+    CLUSTER: sleepless-cluster
+    ZONE: us-central1-a
+    NAMESPACE: default
+    LOCAL_PORT: 8080
+    SSL_SECRET: sleepless # You must create a secret with your cert/key in kubernetes before specifying this. Set to "false" (in quotes) if you don't want SSL
+    SSL_REDIRECT: "true" # Set to "false" (in quotes) if you don't want http 80 traffic to redirect to https 443
+    DOMAIN: sleeplesssoftware.com # Set to "false" (in quotes) if you don't want your app exposed to the internet
+  
+    # Resources - You probably don't need to tweak these, but some apps may be more CPU or Memory hungry...TALK TO BEN IF YOU CHANGE THESE
+    REQUEST_CPU: 25m
+    REQUEST_MEM: 128Mi
+    LIMIT_CPU: 250m
+    LIMIT_MEM: 512Mi
+  
+    # Do not change below unless you know what you're doing
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://localhost:2375
+    IMAGE_NAME: $CI_PROJECT_NAME
+  
+    # This is to resolve docker dind issue: https://github.com/docker-library/docker/issues/170
+    DOCKER_TLS_CERTDIR: ""
+  
+  image: sleeplesssoftware/gcloud-gitlab-runner
+  
+  services:
+    - docker:dind
+  
+  stages:
+    - build
+    - deploy
+  
+  .gcloud_auth: &gcloud_auth |
+    # Get the service account from the secret variable in gitlab, put it in a JSON file, then pass it to gloud auth
+    magic_key=GCLOUD_SERVICE_KEY${SUFFIX}
+    echo ${!magic_key} | base64 -d > ${HOME}/gcloud-service-key.json
+    gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+    # Set auth for docker
+    gcloud auth configure-docker
+  
+  .generate_ingress: &generate_ingress |
+    cat > ${HOME}/ingress.yaml <<EOF
+    apiVersion: extensions/v1beta1
+    kind: Ingress
+    metadata:
+      name: $KUBE_NAME
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/ssl-redirect: "$SSL_REDIRECT"
+    spec:
+      rules:
+      - host: $HOST
+        http:
+          paths:
+          - backend:
+              serviceName: $KUBE_NAME
+              servicePort: $LOCAL_PORT
+    EOF
+  
+    if [[ "$SSL_SECRET" != "false" ]]; then
+    cat >> ${HOME}/ingress.yaml <<-EOF
+      tls:
+      - hosts:
+        - $HOST
+        secretName: $SSL_SECRET
+    EOF
+    else
+        echo "No SSL secret, skipping..."
+    fi
+  
+    # If the ingress exists, skip.  Else, create it in to kubectl
+    if [[ "$DOMAIN" != "false" ]]; then
+      kubectl apply -f ${HOME}/ingress.yaml
+    else
+      echo "No domain specificed, skipping ingress..."
+    fi
+  
+  .deploy_or_scale: &deploy_or_scale |
+    # If this deployment already exists, change the image and "scale" it to basically do a rolling update
+    if kubectl get deployment $KUBE_NAME; then
+      kubectl set image deployment/$KUBE_NAME $KUBE_NAME=gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME:$CI_COMMIT_REF_NAME
+      
+      if kubectl set resources deployment/$KUBE_NAME --requests=cpu=$REQUEST_CPU,memory=$REQUEST_MEM --limits=cpu=$LIMIT_CPU,memory=$LIMIT_MEM; then
+        echo "Resources updated successfully."
+      else 
+        echo "Resources unchanged, skipping..."
+      fi
+  
+      if [[ "$ENV_VARIABLES" != "false" ]]; then
+        # Some magic sauce to split the env variables and loop through them
+        OLDIFS="$IFS"
+        export IFS=", "
+        for env_var in $ENV_VARIABLES; do
+          kubectl set env deployment/$KUBE_NAME $env_var=${!env_var}
+        done
+        export IFS="$OLDIFS"
+      else
+        echo "No ENV variables to set, skipping..."
+      fi
+  
+      kubectl scale --replicas=$REPLICAS deployment/$KUBE_NAME
+  
+      if [[ "$DOMAIN" != false ]]; then
+        if kubectl expose --namespace=$NAMESPACE --port=$LOCAL_PORT deployment/$KUBE_NAME; then
+          echo "Deployment exposed successfully."
+        else
+          echo "Skipped exposing this deployment, service already exists."
+        fi
+      else 
+        if kubectl delete service,ingress $KUBE_NAME; then
+          echo "Service and ingress deleted successfully."
+        else
+          echo "Service and ingress already do not exist, will not attempt to delete."
+        fi
+      fi
+    else
+    # Otherwise "run" this image to create a new deployment
+      run=("run")
+      run+=("$KUBE_NAME")
+      run+=("--image=gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME:$CI_COMMIT_REF_NAME")
+      
+      if [[ "$ENV_VARIABLES" != false ]]; then
+      # Some magic sauce to split the env variables and loop through them
+        OLDIFS="$IFS"
+        export IFS=", "
+        for env_var in $ENV_VARIABLES; do
+          run+=("--env=$env_var=${!env_var}")
+        done
+        export IFS="$OLDIFS"
+      else
+        echo "No ENV variables to set, skipping..."
+      fi
+  
+      run+=("--port=$LOCAL_PORT")
+      run+=("--namespace=$NAMESPACE")
+      run+=("--replicas=$REPLICAS")
+      run+=("--requests=cpu=$REQUEST_CPU,memory=$REQUEST_MEM")
+      run+=("--limits=cpu=$LIMIT_CPU,memory=$LIMIT_MEM")
+  
+      if [[ "$DOMAIN" != false ]]; then
+        run+=("--expose")
+      fi
+  
+      kubectl "${run[@]}"
+    fi
+  
+  build:
+    stage: build
+    only:
+      - tags
+    script:
+      - *gcloud_auth
+      # Create the image
+      - docker build -t $IMAGE_NAME .
+      # Tag the image for container registry
+      - docker tag $IMAGE_NAME gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME
+      # Optionally tag the image with the commit short-sha
+      - docker tag $IMAGE_NAME gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME:$CI_COMMIT_REF_NAME
+      # Push it to google container registry
+      - docker push gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME:latest
+      - docker push gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME:$CI_COMMIT_REF_NAME
+  
+  deploy:
+    stage: deploy
+    only:
+      - /^v?\d+\.\d+\.\d+$/
+    except:
+      - $CI_COMMIT_REF_NAME =~ /^(?!.*(master|v?\d+\.\d+\.\d+)$).*$/
+    environment:
+      name: production
+      url: $SUBDOMAIN.$DOMAIN
+    variables:
+      KUBE_NAME: $CI_PROJECT_NAME
+      HOST: $SUBDOMAIN.$DOMAIN
+    script:
+      - *gcloud_auth
+      - gcloud container clusters get-credentials $CLUSTER --zone=$ZONE
+      - *deploy_or_scale
+      - *generate_ingress
+  

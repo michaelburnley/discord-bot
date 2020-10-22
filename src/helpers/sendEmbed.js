@@ -1,7 +1,7 @@
-const _ = require('lodash');
-const { RichEmbed } = require('discord.js');
+import _ from 'lodash';
+import { RichEmbed } from 'discord.js';
 
-module.exports = (data) => {
+export default (data) => {
 
     const {
         title,
@@ -22,7 +22,7 @@ module.exports = (data) => {
     if (author) embed.setAuthor(author)
     if (color) embed.setColor(color)
     if (description) embed.setDescription(description)
-    if (footer) embed.setFooter("This is the footer text, it can hold 2048 characters", "http://i.imgur.com/w1vhFSR.png")
+    if (footer) embed.setFooter(footer)
     if (image) embed.setImage(image)
     if (thumbnail) embed.setThumbnail(thumbnail)
     if (timestamp) embed.setTimestamp(timestamp)

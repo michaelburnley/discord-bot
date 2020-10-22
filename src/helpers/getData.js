@@ -1,6 +1,6 @@
 // const _ = require('lodash');
-const discord = require('./discord');
-const error = require('../helpers');
+const discord = require('../utils/discord');
+const error = require('.');
 const _ = require('lodash');
 
 const {

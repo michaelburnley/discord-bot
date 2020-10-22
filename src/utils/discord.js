@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const {
     BOT_VERSION,
@@ -12,7 +12,7 @@ const headers = {
     'User-Agent': `DiscordBot (${URL} ${BOT_VERSION})`,
 };
 
-module.exports = axios.create({
-        baseURL: DISCORD_API_URL,
-        headers,
-    });
+export default axios.create({
+    baseURL: DISCORD_API_URL,
+    headers,
+});

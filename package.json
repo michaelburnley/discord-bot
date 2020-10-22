@@ -5,10 +5,11 @@
   "engines": {
     "node": "10.13.0"
   },
-  "main": "index.js",
-  "scripts": {
-    "start": "node index"
-  },
+	"main": "app.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node app.js"
+	},
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -16,9 +17,13 @@
     "discord.js": "^11.4.2",
     "discord.js-commando": "^0.10.0",
     "dotenv": "^6.1.0",
-    "eslint": "^5.16.0",
     "lodash": "^4.17.15",
     "moment-timezone": "^0.5.28",
+    "node-schedule": "^1.3.2",
     "pluralize": "^7.0.0"
-  }
+  },
+  "devDependencies": {
+		"eslint": "^5.16.0",
+	}
+
 }

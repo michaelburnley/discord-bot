@@ -1,9 +1,9 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const {
     DICTIONARY_API_URL
 } = process.env;
 
-module.exports = axios.create({
+export default axios.create({
     baseURL: DICTIONARY_API_URL,
 });

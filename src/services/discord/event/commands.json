@@ -6,6 +6,7 @@
     "touch": ["touch"],
     "smacking": ["smacking"],
     "appreciation": ["thanks", "thank you", "i appreciate you"],
+    "reminders": ["remind me", "set a reminder", "remember this"],
     "demote": {
         "command": ["demote"],
         "permission": ["Daddy"]

@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const {
     DAD_JOKE
@@ -9,7 +9,7 @@ const headers = {
     "Accept": "application/json"
 };
 
-module.exports = axios.create({
+export default axios.create({
     baseURL: DAD_JOKE,
     headers
 });

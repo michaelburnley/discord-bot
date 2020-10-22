@@ -10,6 +10,7 @@ const nowPlaying = require('./presenceChange/nowPlaying');
 const molest = require('./onMessage/molest');
 const thanks = require('./onMessage/thankyou');
 const moveMessage = require('./onMessage/moveMessage');
+const reminder = require('./onMessage/reminder');
 
 const {
     PORT,
@@ -31,6 +32,7 @@ module.exports = (data) => {
             game,
             status
         } = newMember.presence;
+        
         if(game && status === "online") {
             nowPlaying(client, newMember);
         }
@@ -71,6 +73,10 @@ module.exports = (data) => {
             if(_.includes(content, commands.moveMessage)) {
                 moveMessage(msg_data, client);
             }
+
+            // if(_.includes(content, commands.reminders)) {
+            //     reminder(msg_data, client);
+            // }
         }
 
     })
